@@ -1,11 +1,11 @@
 # Overview
 
-[![Build Status](https://travis-ci.org/tinyhubs/properties.svg?branch=master)](https://travis-ci.org/tinyhubs/properties)
-[![GoDoc](https://godoc.org/github.com/tinyhubs/properties?status.svg)](https://godoc.org/github.com/tinyhubs/properties)
-[![Language](https://img.shields.io/badge/language-go-lightgrey.svg)](https://github.com/tinyhubs/properties)
+[![Build Status](https://travis-ci.org/bingoohuang/properties.svg?branch=master)](https://travis-ci.org/bingoohuang/properties)
+[![GoDoc](https://godoc.org/github.com/bingoohuang/properties?status.svg)](https://godoc.org/github.com/bingoohuang/properties)
+[![Language](https://img.shields.io/badge/language-go-lightgrey.svg)](https://github.com/bingoohuang/properties)
 [![License](https://img.shields.io/badge/license-New%20BSD-yellow.svg?style=flat)](LICENSE)
-[![codecov](https://codecov.io/gh/tinyhubs/properties/branch/master/graph/badge.svg)](https://codecov.io/gh/tinyhubs/properties)
-[![goreport](https://www.goreportcard.com/badge/github.com/tinyhubs/properties)](https://www.goreportcard.com/report/github.com/tinyhubs/properties)
+[![codecov](https://codecov.io/gh/bingoohuang/properties/branch/master/graph/badge.svg)](https://codecov.io/gh/bingoohuang/properties)
+[![goreport](https://www.goreportcard.com/badge/github.com/bingoohuang/properties)](https://www.goreportcard.com/report/github.com/bingoohuang/properties)
 
 `*.properties`文件是java里面很常见的配置文件。这里是一个go语言版的*.properties文件读处理库。本库支持properties文件的读取、修改、回写操作。也支持向properties文件中的属性追加、删除注释操作。
 
@@ -79,19 +79,14 @@ golang版本的properties文件的格式定义如下：
 
 #### 属性文档
 
-一个properties文档由一个`properties.PropertiesDocument`对象来表示。一个properties文档由多个key-value形式的属性组成。每个属性还可以追加一行或者多行注释。
+一个properties文档由一个`properties.Doc`对象来表示。一个properties文档由多个key-value形式的属性组成。每个属性还可以追加一行或者多行注释。
 
 #### 加载属性文档
 
-`properties.Load` 从io流生成一个`properties.PropertiesDocument`对象。
+`properties.Load` 从io流生成一个`properties.Doc`对象。
 
 ```go
-file, err := os.Open("test1.properties")
-if nil != err {
-    return
-}
-
-doc, err := properties.Load(file)
+doc, err := properties.LoadFile("test1.properties")
 if nil != err {
     t.Error("加载失败")
     return
@@ -103,15 +98,14 @@ fmt.Println(doc.String("key"))
 
 #### 创建一个新的属性文档对象
 
-`properties.New` 直接创建一个新的属性文档对象,常用于属性创建文档文件的场景下。我们随后可以通过`properties.Save`函数将属性文档写入到文件或者输出流。
+`properties.New` 直接创建一个新的属性文档对象,常用于属性创建文档文件的场景下。我们随后可以通过`properties.Export`函数将属性文档导出到字符串。
 
 ```go
 doc := properties.New()
 doc.Set("a", "aaa")
 doc.Comment("a", "This is a comment for a")
 
-buf := bytes.NewBufferString("")
-properties.Save(doc, buf)
+doc.Export()
 ```
 
 
@@ -121,29 +115,30 @@ properties.Save(doc, buf)
 
 ```go
 buf := bytes.NewBufferString("")
-properties.Save(doc, buf)
+doc.Save(doc, buf)
 ```
 
 #### 属性值的读取
 
 - **通用读取能力**
 
-PropertiesDocument对象的`Get`方法提供了一个基本的元素读取能力：
+Doc对象的`Get`方法提供了一个基本的元素读取能力：
 
 ```go
-func (p PropertiesDocument) Get(key string) (value string, exist bool)
+func (p Doc) Get(key string) (value string, exist bool)
 ```
 
-`Get`函数会返回两个参数，当对应的key在PropertiesDocument文档中存在时，会返回该key对应的value，且exist的值将为true；如果不存在，exist的值将是false。
+`Get`函数会返回两个参数，当对应的key在Doc文档中存在时，会返回该key对应的value，且exist的值将为true；如果不存在，exist的值将是false。
 
 我们经常利用`Get`来探测，某个指定key的属性是否在属性文件中定义了。
 
 - **读取并转换**
-读取属性然后转成对应的数据类型是个很常见的任务，所以PropertiesDocument为最常用的几种类型提供了方便的读取并转换的函数。  
+读取属性然后转成对应的数据类型是个很常见的任务，所以Doc为最常用的几种类型提供了方便的读取并转换的函数。  
   * `String()` 读取一个字符串型的属性，如果不存在默认返回`""`
-  * `Int()` 读取一个属性并转换为`int64`类型，如果key对应的属性不存在，或者转换失败，返回值为0
-  * `Uint()` 和`Int()`函数类似，只是返回的数据类型为uint64
-  * `Float()` 也是和`Int()`函数类似，但返回值为float64
+  * `Int()` 读取一个属性并转换为`int`类型，如果key对应的属性不存在，或者转换失败，返回值为0
+  * `Int64()` 读取一个属性并转换为`int64`类型，如果key对应的属性不存在，或者转换失败，返回值为0
+  * `Uint64()` 和`Int()`函数类似，只是返回的数据类型为uint64
+  * `Float64()` 也是和`Int()`函数类似，但返回值为float64
   * `Bool()` 同与`String`类似，只是返回值是`bool`类型的且缺省值是`false`。`Bool`函数会将`1`, `t`, `T`, `true`, `TRUE`, `True`识别为`true`，将`0`, `f`, `F`, `false`, `FALSE`, `False`识别为`false`。
   * `Object` 这个函数提供了一个数据映射能力，可以将找到的value映射为任何类型。
 
@@ -199,20 +194,20 @@ exist := doc.Del("key")
 
 上面的Comment3和Comment4是mykey属性的注释，但是Comment1和Comment2却不是。
 
-PropertiesDocument的`Comment()`函数用于为属性指定一些注释。而`Uncomment()`函数用于删除指定的key的注释。
+Doc的`Comment()`函数用于为属性指定一些注释。而`Uncomment()`函数用于删除指定的key的注释。
 
-PropertiesDocument的`Comment()`函数允许一次性指定多行注释，而`Uncomment()`用于一次性删除一个指定的key的所有的注释。
+Doc的`Comment()`函数允许一次性指定多行注释，而`Uncomment()`用于一次性删除一个指定的key的所有的注释。
 
 
 #### 文档对象枚举
 
-PropertiesDocument的`Accept()`和`Foreach()`函数都是用来对文档对象进行枚举的，但是`Foreach()`专用于对属性进行遍历。而`Accept()`可以通过对属性和注释进行遍历。
+Doc的`Accept()`和`Foreach()`函数都是用来对文档对象进行枚举的，但是`Foreach()`专用于对属性进行遍历。而`Accept()`可以通过对属性和注释进行遍历。
 
 实际上，`Save()`函数就是利用`Accept()`函数来实现的：
 
 ```go
-func Save(doc *PropertiesDocument, writer io.Writer) {
-    doc.Accept(func(typo byte, value string, key string) bool {
+func (p Doc) Save( writer io.Writer) {
+    p.Accept(func(typo byte, value string, key string) bool {
         switch typo {
         case '#', '!', ' ':
             {
