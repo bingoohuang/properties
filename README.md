@@ -226,5 +226,8 @@ func (p Doc) Save( writer io.Writer) {
 - `'='` 表示当前的value是个以`=`分隔的属性
 - `':'` 表示当前的value是个以`:`分隔的属性
 
+## 更多参考
 
+1. 原始代码 https://github.com/tinyhubs/properties
+1. 其它实现 https://github.com/magiconair/properties 
 
