@@ -7,9 +7,11 @@
 [![codecov](https://codecov.io/gh/bingoohuang/properties/branch/master/graph/badge.svg)](https://codecov.io/gh/bingoohuang/properties)
 [![goreport](https://www.goreportcard.com/badge/github.com/bingoohuang/properties)](https://www.goreportcard.com/report/github.com/bingoohuang/properties)
 
-`*.properties`文件是java里面很常见的配置文件。这里是一个go语言版的*.properties文件读处理库。本库支持properties文件的读取、修改、回写操作。也支持向properties文件中的属性追加、删除注释操作。
+`*.properties`文件是java里面很常见的配置文件。这里是一个go语言版的*.properties文件处理库。
+本库支持properties文件的读取、修改、回写操作。
+也支持向properties文件中的属性追加、删除注释操作。
 
-## go-properties文件格式定义
+## properties文件格式定义
 
 为了使得properties文件的识别更加简单快速，go的properties的文件格式和java的properties文件并不是等价的。它将java里面一些很少用到的格式特性都去掉了。
 
@@ -115,7 +117,7 @@ doc.Export()
 
 ```go
 buf := bytes.NewBufferString("")
-doc.Save(doc, buf)
+doc.Save(buf)
 ```
 
 #### 属性值的读取
@@ -207,16 +209,12 @@ Doc的`Accept()`和`Foreach()`函数都是用来对文档对象进行枚举的�
 
 ```go
 func (p Doc) Save( writer io.Writer) {
-    p.Accept(func(typo byte, value string, key string) bool {
+    p.Accept(func(typo byte, value, key string) bool {
         switch typo {
         case '#', '!', ' ':
-            {
-                fmt.Fprintln(writer, value)
-            }
+            fmt.Fprintln(writer, value)
         case '=', ':':
-            {
-                fmt.Fprintf(writer, "%s%c%s\n", key, typo, value)
-            }
+            fmt.Fprintf(writer, "%s%c%s\n", key, typo, value)
         }
         return true
     })
