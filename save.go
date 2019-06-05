@@ -9,11 +9,9 @@ import (
 // Save saves the doc to file or stream.
 func (p Doc) Export() (string, error) {
 	buf := bytes.NewBufferString("")
-	if err := p.Save(buf); err != nil {
-		return "", err
-	}
+	err := p.Save(buf)
 
-	return buf.String(), nil
+	return buf.String(), err
 }
 
 // Save saves the doc to file or stream.

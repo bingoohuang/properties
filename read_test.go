@@ -1,7 +1,6 @@
 package properties
 
 import (
-	"bytes"
 	"errors"
 	"fmt"
 	"testing"
@@ -15,7 +14,13 @@ func Test_IntDefault(t *testing.T) {
 	key4 : 444 sina
 	key5 : 555 007
 	`
-	doc, _ := Load(bytes.NewBufferString(str))
+	doc, _ := LoadString(str)
+
+	v1 := doc.IntOr("key1", 111)
+	expect(t, "属性key已经存在时,返回存在的值", 1 == v1)
+
+	v1 = doc.IntOr("NOT-EXIST", 111)
+	expect(t, "属性key已经不存在时,返回缺省值", 111 == v1)
 
 	v := doc.Int64Or("key1", 111)
 	expect(t, "属性key已经存在时,返回存在的值", 1 == v)
@@ -44,7 +49,7 @@ func Test_UintDefault(t *testing.T) {
 	key4 : 444 sina
 	key5 : 555 007
 	`
-	doc, _ := Load(bytes.NewBufferString(str))
+	doc, _ := LoadString(str)
 
 	v := doc.Uint64Or("key1", 111)
 	expect(t, "属性key已经存在时,返回存在的值", 1 == v)
@@ -73,7 +78,7 @@ func Test_FloatDefault(t *testing.T) {
 	key4 : 123456789.a
 	key5 : 123456789.
 	`
-	doc, _ := Load(bytes.NewBufferString(str))
+	doc, _ := LoadString(str)
 
 	v := doc.Float64Or("key1", 111.0)
 	expect(t, "属性key已经存在时,返回存在的值", 1.0 == v)
@@ -112,7 +117,7 @@ func Test_BoolDefault(t *testing.T) {
 	key13 : fALSE
 	`
 
-	doc, _ := Load(bytes.NewBufferString(str))
+	doc, _ := LoadString(str)
 
 	for i := 0; i <= 5; i++ {
 		v := doc.BoolOr(fmt.Sprintf("key%d", i), false)
@@ -168,7 +173,7 @@ func Test_ObjectDefault(t *testing.T) {
 		return -1, nil
 	}
 
-	doc, _ := Load(bytes.NewBufferString(str))
+	doc, _ := LoadString(str)
 
 	expect(t, "ObjectOr:属性key已经存在时,返回存在的值1", 1 == doc.ObjectOr("key1", 123, mapping).(int))
 	expect(t, "ObjectOr:属性key已经存在时,返回存在的值2", 1 == doc.ObjectOr("key2", 123, mapping).(int))
@@ -188,31 +193,24 @@ func Test_Object(t *testing.T) {
 	`
 
 	//	映射函数
-	mapping := func(k string, v string) (interface{}, error) {
-		if "0" == v {
+	mapping := func(k, v string) (interface{}, error) {
+		switch v {
+		case "0":
 			return 0, nil
-		}
-
-		if "1" == v {
+		case "1":
 			return 1, nil
-		}
-
-		if "man" == v {
+		case "man":
 			return 1, nil
-		}
-
-		if "women" == v {
+		case "women":
 			return 0, nil
-		}
-
-		if "" == v {
+		case "":
 			return 0, errors.New("INVALID")
+		default:
+			return -1, nil
 		}
-
-		return -1, nil
 	}
 
-	doc, _ := Load(bytes.NewBufferString(str))
+	doc, _ := LoadString(str)
 
 	expect(t, "ObjectOr:属性key已经存在时,返回存在的值1", 1 == doc.Object("key1", mapping).(int))
 
@@ -229,9 +227,10 @@ func Test_Int_String_Uint_Float_Bool(t *testing.T) {
 	key4 : false
 	`
 
-	doc, _ := Load(bytes.NewBufferString(str))
+	doc, _ := LoadString(str)
 
 	expect(t, "Int64", -1 == doc.Int64("key0"))
+	expect(t, "Int", -1 == doc.Int("key0"))
 	expect(t, "String", "-1" == doc.String("key0"))
 	expect(t, "String", "timo" == doc.String("key1"))
 	expect(t, "String", "1234" == doc.String("key2"))
@@ -240,5 +239,4 @@ func Test_Int_String_Uint_Float_Bool(t *testing.T) {
 	expect(t, "Int64", 1234 == doc.Uint64("key2"))
 	expect(t, "Int64", 12.5 == doc.Float64("key3"))
 	expect(t, "Int64", !doc.Bool("key4"))
-
 }

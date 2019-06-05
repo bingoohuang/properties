@@ -8,7 +8,7 @@ import (
 func Test_Comment_Uncomment(t *testing.T) {
 	str := "key1=1\nkey 2 = 2"
 
-	doc, _ := Load(bytes.NewBufferString(str))
+	doc, _ := LoadString(str)
 	exist := doc.Comment("NOT-EXIST", "Some comment")
 	expect(t, "对一个不存在的项执行注释操作,返回false", false == exist)
 

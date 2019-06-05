@@ -14,6 +14,16 @@ func expect(t *testing.T, msg string, result bool) {
 	}
 }
 
+func TestDoc_MustGet(t *testing.T) {
+	doc := New()
+	defer func() {
+		r := recover()
+		assert.NotNil(t, r)
+	}()
+
+	doc.MustGet("key")
+}
+
 func Test_New(t *testing.T) {
 	doc := New()
 	doc.Set("a", "aaa")
@@ -46,7 +56,7 @@ const str = `
 	`
 
 func Test_Get(t *testing.T) {
-	doc, _ := Load(bytes.NewBufferString(str))
+	doc, _ := LoadBytes([]byte(str))
 
 	value1 := doc.MustGet("key1")
 	expect(t, "检测Get函数的行为:EXIST", value1 == "1")
@@ -57,7 +67,7 @@ func Test_Get(t *testing.T) {
 }
 
 func Test_Set(t *testing.T) {
-	doc, _ := Load(bytes.NewBufferString(str))
+	doc, _ := LoadString(str)
 
 	doc.Set("key1", "new-value")
 	newValue, _ := doc.Get("key1")
@@ -69,7 +79,7 @@ func Test_Set(t *testing.T) {
 }
 
 func Test_Del(t *testing.T) {
-	doc, _ := Load(bytes.NewBufferString(str))
+	doc, _ := LoadString(str)
 
 	exist := doc.Del("NOT-EXIST")
 	expect(t, "删除不存在的项,需要返回false", !exist)
