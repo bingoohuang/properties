@@ -2,9 +2,9 @@ package properties
 
 import "strconv"
 
-// StringOr retrieves the string value by key.
+// StrOr retrieves the string value by key.
 // If the line is not exist, the def will be returned.
-func (p Doc) StringOr(key, def string) string {
+func (p Doc) StrOr(key, def string) string {
 	if val, ok := p.Get(key); ok {
 		return val
 	}
@@ -87,9 +87,9 @@ func (p Doc) ObjectOr(key string, def interface{}, f func(k, v string) (interfac
 	return def
 }
 
-// String same as StringOr but the def is "".
-func (p Doc) String(key string) string {
-	return p.StringOr(key, "")
+// Str same as StrOr but the def is "".
+func (p Doc) Str(key string) string {
+	return p.StrOr(key, "")
 }
 
 // Int is same as IntOr but the def is 0 .

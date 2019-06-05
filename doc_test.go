@@ -39,17 +39,6 @@ func Test_New(t *testing.T) {
 	}
 }
 
-func Test_Save(t *testing.T) {
-	doc := New()
-	doc.Set("a", "aaa")
-	doc.Comment("a", "This is a comment for a")
-
-	buf, err := doc.Export()
-	assert.Nil(t, err)
-
-	expect(t, "注释之后保存", "#This is a comment for a\na=aaa\n" == buf)
-}
-
 const str = `
 	key1=1
 	key 2 = 2

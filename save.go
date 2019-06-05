@@ -6,6 +6,13 @@ import (
 	"io"
 )
 
+// String gives the whole properties as a string
+func (p Doc) String() string {
+	s, _ := p.Export()
+
+	return s
+}
+
 // Save saves the doc to file or stream.
 func (p Doc) Export() (string, error) {
 	buf := bytes.NewBufferString("")

@@ -7,6 +7,18 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func Test_Save(t *testing.T) {
+	doc := New()
+	doc.Set("a", "aaa")
+	doc.Comment("a", "This is a comment for a")
+
+	buf, err := doc.Export()
+	assert.Nil(t, err)
+
+	expect(t, "注释之后保存", "#This is a comment for a\na=aaa\n" == buf)
+	expect(t, "注释之后保存", buf == doc.String())
+}
+
 func Test_Load(t *testing.T) {
 	s := `
     a=aa
@@ -27,37 +39,37 @@ func Test_Load(t *testing.T) {
 
 	v := ""
 
-	v = p.String("a")
+	v = p.Str("a")
 	if "aa" != v {
 		t.Error("Get string failed")
 		return
 	}
 
-	v = p.String("b")
+	v = p.Str("b")
 	if "bbb" != v {
 		t.Error("Get string failed")
 		return
 	}
 
-	v = p.String("Z")
+	v = p.Str("Z")
 	if "" != v {
 		t.Error("Get string failed")
 		return
 	}
 
-	v = p.String("c ccc")
+	v = p.Str("c ccc")
 	if "cccc" != v {
 		t.Error("Get string failed")
 		return
 	}
 
-	v = p.String("dd")
+	v = p.Str("dd")
 	if "" != v {
 		t.Error("Get string failed")
 		return
 	}
 
-	v = p.String("ee")
+	v = p.Str("ee")
 	if "r-rt rr" != v {
 		t.Error("Get string failed")
 		return
@@ -74,5 +86,5 @@ func Test_LoadFromFile(t *testing.T) {
 		return
 	}
 
-	fmt.Println(doc.String("key"))
+	fmt.Println(doc.Str("key"))
 }
