@@ -3,6 +3,8 @@ package properties
 import (
 	"fmt"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_Load(t *testing.T) {
@@ -63,6 +65,9 @@ func Test_Load(t *testing.T) {
 }
 
 func Test_LoadFromFile(t *testing.T) {
+	_, err := LoadFile("notexists.properties")
+	assert.NotNil(t, err)
+
 	doc, err := LoadFile("test1.properties")
 	if nil != err {
 		t.Error("加载失败")
