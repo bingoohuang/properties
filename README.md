@@ -142,10 +142,11 @@ func (p Doc) Get(key string) (value string, exist bool)
   * `Uint64()` 和`Int()`函数类似，只是返回的数据类型为uint64
   * `Float64()` 也是和`Int()`函数类似，但返回值为float64
   * `Bool()` 同与`String`类似，只是返回值是`bool`类型的且缺省值是`false`。`Bool`函数会将`1`, `t`, `T`, `true`, `TRUE`, `True`识别为`true`，将`0`, `f`, `F`, `false`, `FALSE`, `False`识别为`false`。
-  * `Object` 这个函数提供了一个数据映射能力，可以将找到的value映射为任何类型。
+  * `Object()` 这个函数提供了一个数据映射能力，可以将找到的value映射为任何类型。
 
 - **指定读取的缺省值**
-前面的`String()`、`Int()`等函数在key不存在或者抓换失败的场景下，默认会返回零值。但零值往往不能满足我们的诉求，我们经常需要自己指定这些场景下的返回值。`StringDefault`，`IntDefault`、`FloatDefault`、`BoolDefault`、`ObjectDefault` 这几个函数的返回值和前面不带`Default`后缀的函数的行为类似，只是当配置项不存在时或者数据格式错误时，会直接返回参数中的`def`(缺省值)。
+前面的`String()`、`Int()`等函数在key不存在或者抓换失败的场景下，默认会返回零值。但零值往往不能满足我们的诉求，我们经常需要自己指定这些场景下的返回值。
+`StringOr`，`IntOr`、`FloatOr`、`BoolOr`、`ObjectOr` 这几个函数的返回值和前面不带`Or`后缀的函数的行为类似，只是当配置项不存在时或者数据格式错误时，会直接返回参数中的`def`(缺省值)。
 
 
 #### 属性的增删改
@@ -196,10 +197,7 @@ exist := doc.Del("key")
 
 上面的Comment3和Comment4是mykey属性的注释，但是Comment1和Comment2却不是。
 
-Doc的`Comment()`函数用于为属性指定一些注释。而`Uncomment()`函数用于删除指定的key的注释。
-
-Doc的`Comment()`函数允许一次性指定多行注释，而`Uncomment()`用于一次性删除一个指定的key的所有的注释。
-
+Doc的`Comment()`函数用于为属性指定一些注释，允许指定多行注释。而`Uncomment()`函数用于删除指定的key的所有注释。
 
 #### 文档对象枚举
 

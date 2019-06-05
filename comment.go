@@ -5,9 +5,9 @@ import (
 	"strings"
 )
 
-// Comment appends comments for the special item.
+// Comment appends comments for the special line.
 //
-// Return false if the special item is not exist.
+// Return false if the special line is not exist.
 func (p *Doc) Comment(key, comments string) bool {
 	e, ok := p.props[key]
 	if !ok {
@@ -16,22 +16,22 @@ func (p *Doc) Comment(key, comments string) bool {
 
 	//  如果所有注释为空
 	if comments == "" {
-		p.items.InsertBefore(&item{typo: '#', value: "#"}, e)
+		p.lines.InsertBefore(&line{typo: '#', value: "#"}, e)
 		return true
 	}
 
 	//  创建一个新的Scanner
 	scanner := bufio.NewScanner(strings.NewReader(comments))
 	for scanner.Scan() {
-		p.items.InsertBefore(&item{typo: '#', value: "#" + scanner.Text()}, e)
+		p.lines.InsertBefore(&line{typo: '#', value: "#" + scanner.Text()}, e)
 	}
 
 	return true
 }
 
-// Uncomment removes all of the comments for the special item.
+// Uncomment removes all of the comments for the special line.
 //
-// Return false if the special item is not exist.
+// Return false if the special line is not exist.
 func (p *Doc) Uncomment(key string) bool {
 	e, ok := p.props[key]
 	if !ok {
@@ -42,12 +42,12 @@ func (p *Doc) Uncomment(key string) bool {
 		del := i
 		i = i.Prev()
 
-		typo := del.Value.(*item).typo
-		if typo == '=' || typo == ':' || typo == ' ' {
+		typo := del.Value.(*line).typo
+		if isProperty(typo) || typo == ' ' {
 			break
 		}
 
-		p.items.Remove(del)
+		p.lines.Remove(del)
 	}
 
 	return true

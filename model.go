@@ -2,7 +2,7 @@ package properties
 
 import "container/list"
 
-type item struct {
+type line struct {
 	//  #   注释行
 	//  !   注释行
 	//  ' ' 空白行或者空行
@@ -15,6 +15,18 @@ type item struct {
 
 // Doc The properties document in memory.
 type Doc struct {
-	items *list.List
+	lines *list.List
 	props map[string]*list.Element
+}
+
+func isComment(typo byte) bool {
+	return typo == '#' || typo == '!'
+}
+
+func isProperty(typo byte) bool {
+	return typo == '=' || typo == ':'
+}
+
+func (i line) isProperty() bool {
+	return isProperty(i.typo)
 }

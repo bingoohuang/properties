@@ -3,7 +3,7 @@ package properties
 import "strconv"
 
 // StringOr retrieves the string value by key.
-// If the item is not exist, the def will be returned.
+// If the line is not exist, the def will be returned.
 func (p Doc) StringOr(key, def string) string {
 	if val, ok := p.Get(key); ok {
 		return val
@@ -13,7 +13,7 @@ func (p Doc) StringOr(key, def string) string {
 }
 
 // IntOr retrieves the int value by key.
-// If the item is not exist, the def will be returned.
+// If the line is not exist, the def will be returned.
 func (p Doc) IntOr(key string, def int) int {
 	if val, ok := p.Get(key); ok {
 		if v, err := strconv.Atoi(val); err == nil {
@@ -25,7 +25,7 @@ func (p Doc) IntOr(key string, def int) int {
 }
 
 // Int64Or retrieves the int64 value by key.
-// If the item is not exist, the def will be returned.
+// If the line is not exist, the def will be returned.
 func (p Doc) Int64Or(key string, def int64) int64 {
 	if val, ok := p.Get(key); ok {
 		if v, err := strconv.ParseInt(val, 10, 64); err == nil {
@@ -48,7 +48,7 @@ func (p Doc) Uint64Or(key string, def uint64) uint64 {
 }
 
 // Float64Or   retrieve the float64 value by key.
-// If the item is not exist, the def will be returned.
+// If the line is not exist, the def will be returned.
 func (p Doc) Float64Or(key string, def float64) float64 {
 	if val, ok := p.Get(key); ok {
 		if v, err := strconv.ParseFloat(val, 64); err == nil {
@@ -60,10 +60,10 @@ func (p Doc) Float64Or(key string, def float64) float64 {
 }
 
 // BoolOr   retrieve the bool value by key.
-// If the item is not exist, the def will be returned.
+// If the line is not exist, the def will be returned.
 // This function mapping "1", "t", "T", "true", "TRUE", "True" as true.
 // This function mapping "0", "f", "F", "false", "FALSE", "False" as false.
-// If the item is not exist of can not map to value of bool,the def will be returned.
+// If the line is not exist of can not map to value of bool,the def will be returned.
 func (p Doc) BoolOr(key string, def bool) bool {
 	if val, ok := p.Get(key); ok {
 		if v, err := strconv.ParseBool(val); err == nil {
@@ -76,7 +76,7 @@ func (p Doc) BoolOr(key string, def bool) bool {
 
 // ObjectOr maps the value of the key to any object.
 // The f is the customized mapping function.
-// Return def if the item is not exist of f have a error returned.
+// Return def if the line is not exist of f have a error returned.
 func (p Doc) ObjectOr(key string, def interface{}, f func(k, v string) (interface{}, error)) interface{} {
 	if val, ok := p.Get(key); ok {
 		if v, err := f(key, val); err == nil {
