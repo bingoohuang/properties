@@ -15,7 +15,7 @@ func Test_Save(t *testing.T) {
 	buf, err := doc.Export()
 	assert.Nil(t, err)
 
-	expect(t, "注释之后保存", "#This is a comment for a\na=aaa\n" == buf)
+	expect(t, "注释之后保存", buf == "#This is a comment for a\na=aaa\n")
 	expect(t, "注释之后保存", buf == doc.String())
 }
 
@@ -32,7 +32,7 @@ func Test_Load(t *testing.T) {
     `
 
 	p, err := LoadString(s)
-	if nil != err {
+	if err != nil {
 		t.Error("加载失败")
 		return
 	}
@@ -40,37 +40,37 @@ func Test_Load(t *testing.T) {
 	v := ""
 
 	v = p.Str("a")
-	if "aa" != v {
+	if v != "aa" {
 		t.Error("Get string failed")
 		return
 	}
 
 	v = p.Str("b")
-	if "bbb" != v {
+	if v != "bbb" {
 		t.Error("Get string failed")
 		return
 	}
 
 	v = p.Str("Z")
-	if "" != v {
+	if v != "" {
 		t.Error("Get string failed")
 		return
 	}
 
 	v = p.Str("c ccc")
-	if "cccc" != v {
+	if v != "cccc" {
 		t.Error("Get string failed")
 		return
 	}
 
 	v = p.Str("dd")
-	if "" != v {
+	if v != "" {
 		t.Error("Get string failed")
 		return
 	}
 
 	v = p.Str("ee")
-	if "r-rt rr" != v {
+	if v != "r-rt rr" {
 		t.Error("Get string failed")
 		return
 	}
@@ -81,7 +81,7 @@ func Test_LoadFromFile(t *testing.T) {
 	assert.NotNil(t, err)
 
 	doc, err := LoadFile("test1.properties")
-	if nil != err {
+	if err != nil {
 		t.Error("加载失败")
 		return
 	}

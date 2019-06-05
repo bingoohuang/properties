@@ -34,7 +34,7 @@ func Test_Accept(t *testing.T) {
 		return typo != ':'
 	})
 
-	expect(t, "Accept提前中断", 5 == count)
+	expect(t, "Accept提前中断", count == 5)
 }
 
 func Test_Foreach(t *testing.T) {
@@ -43,8 +43,8 @@ func Test_Foreach(t *testing.T) {
 	doc, _ := LoadString(str1)
 	doc.Foreach(func(value string, key string) bool {
 		count++
-		return "key 2" != key
+		return key != "key 2"
 	})
 
-	expect(t, "Foreach提前中断", 2 == count)
+	expect(t, "Foreach提前中断", count == 2)
 }

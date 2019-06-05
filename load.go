@@ -42,7 +42,7 @@ func Load(reader io.Reader) (doc *Doc, err error) {
 		l := scanner.Bytes()
 
 		//  遇到空行
-		if 0 == len(l) {
+		if len(l) == 0 {
 			doc.lines.PushBack(&line{typo: ' ', value: string("")})
 			continue
 		}
@@ -51,7 +51,7 @@ func Load(reader io.Reader) (doc *Doc, err error) {
 		pos := bytes.IndexFunc(l, func(r rune) bool { return !unicode.IsSpace(r) })
 
 		//  遇到空白行
-		if -1 == pos {
+		if pos == -1 {
 			doc.lines.PushBack(&line{typo: ' ', value: string("")})
 			continue
 		}
@@ -69,7 +69,7 @@ func Load(reader io.Reader) (doc *Doc, err error) {
 		var typo byte = '='
 		var key []byte
 		var value []byte
-		if -1 == end {
+		if end == -1 {
 			key = bytes.TrimRightFunc(l[pos:], unicode.IsSpace)
 		} else {
 			key = bytes.TrimRightFunc(l[pos:pos+1+end], unicode.IsSpace)

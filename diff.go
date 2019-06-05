@@ -6,6 +6,7 @@ const (
 	Modified ChangeType = iota
 	Added
 	Removed
+	Same
 )
 
 // DiffEvent defines ChangeEvent for properties diff
@@ -22,9 +23,11 @@ func Diff(l, r *Doc, f func(DiffEvent)) {
 	l.Foreach(func(v, k string) bool { lm[k] = v; return true })
 	r.Foreach(func(v, k string) bool {
 		if lv, ok := lm[k]; ok {
+			typ := Same
 			if v != lv {
-				f(DiffEvent{ChangeType: Modified, Key: k, LeftValue: lv, RightValue: v})
+				typ = Modified
 			}
+			f(DiffEvent{ChangeType: typ, Key: k, LeftValue: lv, RightValue: v})
 			delete(lm, k)
 		} else {
 			f(DiffEvent{ChangeType: Added, Key: k, LeftValue: "", RightValue: v})

@@ -32,7 +32,7 @@ func Test_New(t *testing.T) {
 	buf := bytes.NewBufferString("")
 	assert.Nil(t, doc.Save(buf))
 
-	if "#This is a comment for a\na=aaa\n" != buf.String() {
+	if buf.String() != "#This is a comment for a\na=aaa\n" {
 		fmt.Println("Dump failed:[" + buf.String() + "]")
 		t.Error("Dump failed")
 		return
@@ -60,11 +60,11 @@ func Test_Set(t *testing.T) {
 
 	doc.Set("key1", "new-value")
 	newValue, _ := doc.Get("key1")
-	expect(t, "修改已经存在的项的值", "new-value" == newValue)
+	expect(t, "修改已经存在的项的值", newValue == "new-value")
 
 	doc.Set("NOT-EXIST", "Setup-New-Item")
 	newValue, _ = doc.Get("NOT-EXIST")
-	expect(t, "修改不存在的项,默认是新增行为", "Setup-New-Item" == newValue)
+	expect(t, "修改不存在的项,默认是新增行为", newValue == "Setup-New-Item")
 }
 
 func Test_Del(t *testing.T) {
