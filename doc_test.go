@@ -10,78 +10,9 @@ import (
 )
 
 func expect(t *testing.T, msg string, result bool) {
-	if result {
-		return
+	if !result {
+		t.Error(msg)
 	}
-
-	t.Error(msg)
-}
-
-func Test_Load(t *testing.T) {
-	s := `
-    a=aa
-    b=bbb
-    c ccc = cccc
-    dd
-    # commment1
-    !comment2
-    
-    ee: r-rt rr
-    `
-
-	p, err := LoadString(s)
-	if nil != err {
-		t.Error("加载失败")
-		return
-	}
-
-	v := ""
-
-	v = p.String("a")
-	if "aa" != v {
-		t.Error("Get string failed")
-		return
-	}
-
-	v = p.String("b")
-	if "bbb" != v {
-		t.Error("Get string failed")
-		return
-	}
-
-	v = p.String("Z")
-	if "" != v {
-		t.Error("Get string failed")
-		return
-	}
-
-	v = p.String("c ccc")
-	if "cccc" != v {
-		t.Error("Get string failed")
-		return
-	}
-
-	v = p.String("dd")
-	if "" != v {
-		t.Error("Get string failed")
-		return
-	}
-
-	v = p.String("ee")
-	if "r-rt rr" != v {
-		t.Error("Get string failed")
-		return
-	}
-}
-
-func Test_LoadFromFile(t *testing.T) {
-	doc, err := LoadFile("test1.properties")
-	if nil != err {
-		t.Error("加载失败")
-		return
-	}
-
-	fmt.Println(doc.String("key"))
 }
 
 func Test_New(t *testing.T) {
@@ -118,12 +49,11 @@ const str = `
 func Test_Get(t *testing.T) {
 	doc, _ := Load(bytes.NewBufferString(str))
 
-	value, exist := doc.Get("key1")
-	expect(t, "检测Get函数的行为:EXIST", true == exist)
-	expect(t, "检测Get函数的行为:EXIST", value == "1")
+	value1 := doc.MustGet("key1")
+	expect(t, "检测Get函数的行为:EXIST", value1 == "1")
 
-	value, exist = doc.Get("NOT-EXIST")
-	expect(t, "检测Get函数的行为:NOT-EXIST", false == exist)
+	value, exist := doc.Get("NOT-EXIST")
+	expect(t, "检测Get函数的行为:NOT-EXIST", !exist)
 	expect(t, "检测Get函数的行为:NOT-EXIST", value == "")
 }
 
@@ -143,53 +73,10 @@ func Test_Del(t *testing.T) {
 	doc, _ := Load(bytes.NewBufferString(str))
 
 	exist := doc.Del("NOT-EXIST")
-	expect(t, "删除不存在的项,需要返回false", false == exist)
+	expect(t, "删除不存在的项,需要返回false", !exist)
 
 	exist = doc.Del("key1")
-	expect(t, "删除已经存在的项,返回true", true == exist)
-}
-
-func Test_Comment_Uncomment(t *testing.T) {
-	str := "key1=1\nkey 2 = 2"
-
-	doc, _ := Load(bytes.NewBufferString(str))
-	exist := doc.Comment("NOT-EXIST", "Some comment")
-	expect(t, "对一个不存在的项执行注释操作,返回false", false == exist)
-
-	doc.Comment("key1", "This is a \ncomment \nfor a")
-	buf := bytes.NewBufferString("")
-	err := doc.Save(buf)
-	expect(t, "格式化成功", nil == err)
-	exp1 := "#This is a \n#comment \n#for a\nkey1=1\nkey 2=2\n"
-	expect(t, "对已经存在的项进行注释", exp1 == buf.String())
-
-	doc.Comment("key 2", "")
-	buf = bytes.NewBufferString("")
-	err = doc.Save(buf)
-	expect(t, "格式化成功", nil == err)
-	exp2 := "#This is a \n#comment \n#for a\nkey1=1\n#\nkey 2=2\n"
-	expect(t, "对已经存在的项进行注释", exp2 == buf.String())
-
-	exist = doc.Uncomment("key1")
-	expect(t, "对已经存在的key进行注释,返回true", true == exist)
-	buf = bytes.NewBufferString("")
-	err = doc.Save(buf)
-	expect(t, "格式化成功", nil == err)
-	exp3 := "key1=1\n#\nkey 2=2\n"
-	expect(t, "对已经存在的项进行注释", exp3 == buf.String())
-
-	exist = doc.Uncomment("key 2")
-	expect(t, "对已经存在的key进行注释,返回true", true == exist)
-	expect(t, "对已经存在的项进行注释", exp3 == buf.String())
-
-	buf = bytes.NewBufferString("")
-	err = doc.Save(buf)
-	expect(t, "格式化成功", nil == err)
-	exp4 := "key1=1\nkey 2=2\n"
-	expect(t, "对已经存在的项进行注释", exp4 == buf.String())
-
-	exist = doc.Uncomment("NOT-EXIST")
-	expect(t, "对不已经存在的key进行注释,返回false", false == exist)
+	expect(t, "删除已经存在的项,返回true", exist)
 }
 
 func Test_Accept(t *testing.T) {
@@ -466,6 +353,6 @@ func Test_Int_String_Uint_Float_Bool(t *testing.T) {
 	expect(t, "String", "false" == doc.String("key4"))
 	expect(t, "Int64", 1234 == doc.Uint64("key2"))
 	expect(t, "Int64", 12.5 == doc.Float64("key3"))
-	expect(t, "Int64", false == doc.Bool("key4"))
+	expect(t, "Int64", !doc.Bool("key4"))
 
 }
