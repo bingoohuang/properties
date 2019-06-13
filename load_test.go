@@ -80,7 +80,7 @@ func Test_LoadFromFile(t *testing.T) {
 	_, err := LoadFile("notexists.properties")
 	assert.NotNil(t, err)
 
-	doc, err := LoadFile("test1.properties")
+	doc, err := LoadFile("load_test.properties")
 	if err != nil {
 		t.Error("加载失败")
 		return

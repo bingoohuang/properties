@@ -1,6 +1,8 @@
 package properties
 
 import (
+	"io/ioutil"
+	"os"
 	"testing"
 
 	"github.com/bingoohuang/gou"
@@ -8,11 +10,20 @@ import (
 )
 
 func TestSaveFile(t *testing.T) {
+	ioutil.WriteFile("save_test.properties", []byte("key=value"), 0644)
+
 	doc, err := LoadFile("save_test.properties")
 	assert.Nil(t, err)
 
-	doc.Set("key", gou.RandomString(10))
+	os.Remove("save_test.properties")
+
+	val := gou.RandomString(10)
+	doc.Set("key", val)
 
 	err = doc.ExportFile("save_test.properties")
 	assert.Nil(t, err)
+
+	nv, _ := ioutil.ReadFile("save_test.properties")
+	assert.Equal(t, string(nv), "key="+val+"\n")
+	os.Remove("save_test.properties")
 }
