@@ -1,9 +1,11 @@
 package properties
 
 import (
+	"bufio"
 	"bytes"
 	"fmt"
 	"io"
+	"os"
 )
 
 // String gives the whole properties as a string
@@ -11,6 +13,25 @@ func (p Doc) String() string {
 	s, _ := p.Export()
 
 	return s
+}
+
+// ExportFile saves the doc to file.
+func (p Doc) ExportFile(file string) error {
+	f, err := os.Create(file)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	w := bufio.NewWriter(f)
+	err = p.Save(w)
+	if err != nil {
+		return err
+	}
+
+	w.Flush()
+
+	return nil
 }
 
 // Save saves the doc to file or stream.
