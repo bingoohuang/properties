@@ -7,6 +7,20 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestLoadMap(t *testing.T) {
+	doc, err := LoadMap(map[string]string{
+		"key1": "value1",
+		"key2": "value2",
+	})
+
+	that := assert.New(t)
+	that.Nil(err)
+	that.Equal(map[string]string{
+		"key1": "value1",
+		"key2": "value2",
+	}, doc.Map())
+}
+
 func Test_Save(t *testing.T) {
 	doc := New()
 	doc.Set("a", "aaa")
