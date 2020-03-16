@@ -21,6 +21,18 @@ func LoadFile(file string) (doc *Doc, err error) {
 	return Load(f)
 }
 
+// LoadMap creates a new Properties struct from a string map.
+// copy from https://github.com/magiconair/properties
+func LoadMap(m map[string]string) (doc *Doc, err error) {
+	p := New()
+
+	for k, v := range m {
+		p.Set(k, v)
+	}
+
+	return p, nil
+}
+
 // LoadString creates the properties document from a string.
 func LoadString(s string) (doc *Doc, err error) {
 	return Load(strings.NewReader(s))
