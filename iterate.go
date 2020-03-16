@@ -3,7 +3,9 @@ package properties
 // Map gets the map of properties
 func (p Doc) Map() map[string]string {
 	m := make(map[string]string)
+
 	p.Foreach(func(v, k string) bool { m[k] = v; return true })
+
 	return m
 }
 

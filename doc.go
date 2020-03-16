@@ -55,6 +55,7 @@ func (p *Doc) Del(key string) bool {
 		p.Uncomment(key)
 		p.lines.Remove(e)
 		delete(p.props, key)
+
 		return true
 	}
 

@@ -25,6 +25,7 @@ func (p Doc) ExportFile(file string) error {
 
 	w := bufio.NewWriter(f)
 	err = p.Save(w)
+
 	if err != nil {
 		return err
 	}
@@ -34,7 +35,7 @@ func (p Doc) ExportFile(file string) error {
 	return nil
 }
 
-// Save saves the doc to file or stream.
+// Export saves the doc to file or stream.
 func (p Doc) Export() (string, error) {
 	buf := bytes.NewBufferString("")
 	err := p.Save(buf)

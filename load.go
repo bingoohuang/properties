@@ -17,6 +17,7 @@ func LoadFile(file string) (doc *Doc, err error) {
 	}
 
 	defer f.Close()
+
 	return Load(f)
 }
 
@@ -25,7 +26,7 @@ func LoadString(s string) (doc *Doc, err error) {
 	return Load(strings.NewReader(s))
 }
 
-// LoadString creates the properties document from a string.
+// LoadBytes creates the properties document from a string.
 func LoadBytes(s []byte) (doc *Doc, err error) {
 	return Load(bytes.NewReader(s))
 }
@@ -65,10 +66,11 @@ func Load(reader io.Reader) (doc *Doc, err error) {
 		//  找到第一个等号的位置
 		end := bytes.IndexFunc(l[pos+1:], func(r rune) bool { return r == '=' || r == ':' })
 
-		//  没有=，说明该配置项只有key
-		var typo byte = '='
-		var key []byte
-		var value []byte
+		var (
+			typo       byte = '=' //  没有=，说明该配置项只有key
+			key, value []byte
+		)
+
 		if end == -1 {
 			key = bytes.TrimRightFunc(l[pos:], unicode.IsSpace)
 		} else {

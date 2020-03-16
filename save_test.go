@@ -1,3 +1,4 @@
+// nolint gomnd
 package properties
 
 import (
@@ -5,7 +6,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/bingoohuang/gou"
+	"github.com/bingoohuang/gou/ran"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -17,7 +18,7 @@ func TestSaveFile(t *testing.T) {
 
 	os.Remove("save_test.properties")
 
-	val := gou.RandomString(10)
+	val := ran.String(10)
 	doc.Set("key", val)
 
 	err = doc.ExportFile("save_test.properties")

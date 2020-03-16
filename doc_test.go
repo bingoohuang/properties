@@ -16,6 +16,7 @@ func expect(t *testing.T, msg string, result bool) {
 
 func TestDoc_MustGet(t *testing.T) {
 	doc := New()
+
 	defer func() {
 		r := recover()
 		assert.NotNil(t, r)
@@ -35,6 +36,7 @@ func Test_New(t *testing.T) {
 	if buf.String() != "#This is a comment for a\na=aaa\n" {
 		fmt.Println("Dump failed:[" + buf.String() + "]")
 		t.Error("Dump failed")
+
 		return
 	}
 }

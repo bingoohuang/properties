@@ -1,11 +1,16 @@
 package properties
 
+// ChangeType defines the type of chaging.
 type ChangeType int
 
 const (
+	// Modified ...
 	Modified ChangeType = iota
+	// Added ...
 	Added
+	// Removed ...
 	Removed
+	// Same ...
 	Same
 )
 
@@ -20,6 +25,7 @@ type DiffEvent struct {
 // Diff diffs l to r.
 func Diff(l, r *Doc, f func(DiffEvent)) {
 	lm := make(map[string]string)
+
 	l.Foreach(func(v, k string) bool { lm[k] = v; return true })
 	r.Foreach(func(v, k string) bool {
 		if lv, ok := lm[k]; ok {
