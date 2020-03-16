@@ -1,6 +1,8 @@
 package properties
 
-import "container/list"
+import (
+	"container/list"
+)
 
 type line struct {
 	//  #   注释行
